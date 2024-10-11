@@ -4,10 +4,10 @@ const cors = require('cors'); // Import CORS
 
 // Initialize the PostgreSQL pool
 const pool = new Pool({
-  user: 'computeraccount', // replace with your PostgreSQL username
-  host: 'localhost',
-  database: 'wordapp_db', // replace with your database name
-  port: 5432,
+  connectionString: process.env.DATABASE_URL, // This will pull the value from your .env file
+  ssl: {
+    rejectUnauthorized: false, // Required for Heroku
+  },
 });
 
 // Function to create the users table
@@ -84,6 +84,27 @@ app.put('/api/users/score', async (req, res) => {
   } catch (err) {
     console.error('Database error:', err.message, err.stack);
     res.status(500).json({ error: 'Error updating correct spelling count', details: err.message });
+  }
+});
+
+// GET method to retrieve user data
+app.get('/api/users/:firebase_uid', async (req, res) => {
+  const { firebase_uid } = req.params;
+
+  try {
+    const result = await pool.query(
+      'SELECT correct_spelling_count FROM users WHERE firebase_uid = $1',
+      [firebase_uid]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(result.rows[0]);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Error retrieving user data', details: err.message });
   }
 });
 

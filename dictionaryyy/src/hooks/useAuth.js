@@ -26,20 +26,20 @@ const useAuth = () => {
       },
       body: JSON.stringify({ firebase_uid, email }),
     });
-  
+
     if (!response.ok) {
       throw new Error('Failed to add user');
     }
-  
+
     return response.json();
   };
-  
+
   const loginWithEmail = async (email, password) => {
     setError('');
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUserId(userCredential.user.uid);
-      await addUserToDatabase(userCredential.user.uid, userCredential.user.email); // Include email
+      await addUserToDatabase(userCredential.user.uid, userCredential.user.email);
       return userCredential.user;
     } catch (error) {
       setError(error.message);
@@ -53,7 +53,7 @@ const useAuth = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       setUserId(result.user.uid);
-      await addUserToDatabase(result.user.uid, result.user.email); // Include email
+      await addUserToDatabase(result.user.uid, result.user.email);
       return result.user;
     } catch (error) {
       setError(error.message);
@@ -64,9 +64,9 @@ const useAuth = () => {
   const logout = async () => {
     try {
       await signOut(auth);
-      setUserId(null); // Clear userId after logging out
+      setUserId(null);
     } catch (error) {
-      console.error('Logout error:', error);x
+      console.error('Logout error:', error);
     }
   };
 

@@ -2,6 +2,7 @@
 import { Text, Box, Link, Button } from '@chakra-ui/react';
 import useAuth from '../hooks/useAuth'; 
 import LogoutButton from '../components/LogoutButton'; 
+import UserProfile from './UserProfile';
 
 const ActiveUserDisplay = () => {
   const { userId } = useAuth(); 
@@ -21,6 +22,7 @@ const ActiveUserDisplay = () => {
             HOME
           </Text>
           </Link>
+          <UserProfile />
         </>
       ) : (
         <Box

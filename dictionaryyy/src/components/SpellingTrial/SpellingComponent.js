@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Box, Button, Input, Text } from '@chakra-ui/react';
 import useAuth from '../../hooks/useAuth'
+import UserProfile from '../UserProfile';
 
 
 
