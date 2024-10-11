@@ -8,7 +8,7 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-const Home = () => {
+const DefinitionComponent = () => {
   const [wordData, setWordData] = useState(null);
   const [userDefinition, setUserDefinition] = useState('');
   const [result, setResult] = useState('');
@@ -87,4 +87,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default DefinitionComponent;
