@@ -1,6 +1,6 @@
 // hooks/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth } from '../firebase/firebaseConfig' 
+import { auth } from '../../src/firebase/firebaseConfig'
 
 const AuthContext = createContext();
 
@@ -28,9 +28,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginWithGoogle = async () => {
-    // Implement Google sign-in logic
+    const provider = new GoogleAuthProvider();
+    try {
+      await auth.signInWithPopup(provider);
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
   };
-
   return (
     <AuthContext.Provider value={{ user, error, loginWithEmail, loginWithGoogle }}>
       {children}
