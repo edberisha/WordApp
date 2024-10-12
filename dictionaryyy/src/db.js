@@ -1,6 +1,6 @@
-const express = require('express');
-const { Pool } = require('pg');
-const cors = require('cors');
+import express, { Request, Response } from 'express';
+import { Pool } from 'pg';
+import cors from 'cors';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
