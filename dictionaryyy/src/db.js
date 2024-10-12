@@ -1,18 +1,23 @@
 import express from 'express';
 import pg from 'pg';
 import cors from 'cors';
+import dotenv from 'dotenv'; // Import dotenv to load .env variables
+
+dotenv.config(); // Load environment variables from .env file
 
 const { Pool } = pg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
 const app = express();
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://your-production-domain.com'], // Allow requests from these origins
+  methods: ['GET', 'POST'],
+  credentials: true, // If you need to allow cookies or authentication
+}));
 app.use(express.json());
 
 // API endpoint to add a user
@@ -36,30 +41,26 @@ app.post('/api/users', async (req, res) => {
   }
 });
 
-// Other API endpoints here...
-
-// Start the server
-app.listen(3001, () => {
-  console.log('Server running on http://localhost:3001');
-});
-
-
-
-
-
+// API endpoint to get user score
 app.get('/api/users/:firebase_uid', async (req, res) => {
   const { firebase_uid } = req.params;
 
   try {
-      const result = await pool.query('SELECT correct_spelling_count FROM users WHERE firebase_uid = $1', [firebase_uid]);
+    const result = await pool.query('SELECT correct_spelling_count FROM users WHERE firebase_uid = $1', [firebase_uid]);
 
-      if (result.rows.length > 0) {
-          res.status(200).json(result.rows[0]); // Make sure this returns { correct_spelling_count: value }
-      } else {
-          res.status(404).json({ message: 'User not found' });
-      }
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]); // Make sure this returns { correct_spelling_count: value }
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
   } catch (err) {
-      console.error('Database error:', err.message);
-      res.status(500).json({ error: 'Error fetching user', details: err.message });
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Error fetching user', details: err.message });
   }
+});
+
+// Start the server
+const PORT = process.env.PORT || 3001; // Use the port from Heroku or default to 3001
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
