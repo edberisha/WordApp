@@ -1,6 +1,6 @@
 // hooks/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import {auth} from '../firebase/firebaseConfig'
+import {auth} from '../../src/firebase/firebaseConfig'
 
 const AuthContext = createContext();
 
