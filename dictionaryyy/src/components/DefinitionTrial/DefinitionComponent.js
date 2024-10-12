@@ -4,7 +4,7 @@ import { Box, Button, Input, Text } from '@chakra-ui/react';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: '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',
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
 });
 

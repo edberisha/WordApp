@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Box, Button, FormControl, FormLabel, Input, Heading, Link, Text } from '@chakra-ui/react';
 import useAuth from '../hooks/useAuth';
+import {TitleThing} from '../components/TitleThing'
 
 export default function Home() {
   const { user, error, loginWithEmail, loginWithGoogle } = useAuth();
@@ -20,77 +21,112 @@ export default function Home() {
     try {
       await loginWithGoogle();
       window.location.href = "/main";
-    } catch (error) {
+    } catch (error) {xw
       console.error("Google sign-in error:", error);
     }
   };
 
   return (
     <Box
-      mt="20vh"
       display="flex"
       justifyContent="center"
       alignItems="center"
       flexDirection="column"
     >
+
       {user && (
         <Text fontSize="lg" mb={4}>
           Logged in as: <strong>{user.email}</strong>
         </Text>
       )}
-      <Heading mb={6}>Login</Heading>
+      <Box>
+      <TitleThing />
+      </Box>
       <Box 
-        p={8} 
+        p={50} 
         borderWidth={1} 
         borderRadius="20px" 
-        border="2px solid red"
-        boxShadow="lg"
+        border="5px solid #e07a5f"
+        boxShadow="0 4px 20px rgba(0, 0, 0, 0.5)" // Custom shadow for depth
         backgroundColor="white"
         color="black"
       >
-        {error && <Text color="red.500" mb={4}>{error}</Text>}
-        <FormControl id="email" mb={4}>
-          <FormLabel>Email</FormLabel>
+        
+        {error && <Text 
+        color="red.500" mb={4}>{error}</Text>}
+        <FormControl 
+        
+          id="email" 
+          mb={4}>
+          <FormLabel 
+          ></FormLabel>
           <Input
+            fontSize={['sm','md','lg','xl']}
+            width="100%" 
+            color="black"
+            bg={'white'}
+            fontFamily={"raleway"}
             type="email"
-            placeholder="Enter your email"
+            placeholder="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </FormControl>
-        <FormControl id="password" mb={4}>
-          <FormLabel>Password</FormLabel>
+        <FormControl 
+        id="password" mb={4}>
+          <FormLabel></FormLabel>
           <Input
+            fontSize={['sm','md','lg','xl']}
+            color="black"
+            width="100%" 
+            bg={'white'}
+            fontFamily={"raleway"}
             type="password"
-            placeholder="Enter your password"
+            placeholder="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </FormControl>
+
         <Button 
-          colorScheme="teal" 
-          width="full" 
+          padding={5}
+          color="white"
+          bg="#81b29a" 
+          width="100%" 
           onClick={handleLogin}
         >
           Login
         </Button>
-        <Button 
-          colorScheme="teal" 
-          width="full" 
-          mt={4}
-          onClick={handleGoogleSignIn}
+        <Box
+        mt="5%"
+        display="flex"
+        gap={3}
+   
         >
-          Sign in with Google
-        </Button>
-        <Link href="/main">
-          <Button 
-            colorScheme="teal" 
-            width="full" 
-            mt={4}
-          >
-            Play as Guest
-          </Button>
-        </Link>
+              <Button 
+                color="white"
+                bg="#81b29a" 
+                padding={5}
+                width="full" 
+                onClick={handleGoogleSignIn}
+                
+              >
+                Sign in with Google
+              </Button>
+              <Link href="/main">
+                <Button 
+                          color="white"
+                          bg="#81b29a" 
+                          padding={5}
+
+                  colorScheme="teal" 
+                  width="full" 
+                >
+                  Play as Guest
+                </Button>
+              </Link>
+        </Box>
+
       </Box>
     </Box>
   );

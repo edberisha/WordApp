@@ -2,7 +2,6 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Box, Button, Input, Text } from '@chakra-ui/react';
 import useAuth from '../../hooks/useAuth'
-import UserProfile from '../UserProfile';
 
 
 
@@ -15,16 +14,23 @@ const SpellingComponent = () => {
 
 
   const getRandomWord = async () => {
-
-
     try {
-      const { data: [randomWord] } = await axios.get('https://random-word-api.herokuapp.com/word');
+      const { data: [randomWord] } = await axios.get('https://random-word.ryanrk.com/api/en/word/random');
       const { data: definitions } = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`);
       setWordData(definitions[0]);
       setUserSpelling('');
       setResult('');
     } catch (error) {
-      console.error("Error fetching word or definition:", error);
+      if (error.response) {
+        console.error("Error fetching word or definition:", error.response.data);
+        setResult("Could not fetch a new word. Please try again.");
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+        setResult("No response from server. Please check your connection.");
+      } else {
+        console.error("Error:", error.message);
+        setResult("An unexpected error occurred. Please try again later.");
+      }
     }
   };
 
@@ -54,7 +60,10 @@ const SpellingComponent = () => {
   return (
     <Box width="100%">
       <Box display="flex" justifyContent={"center"}>
-        <Button fontSize={['15px', '15px', '20px', '25px', '30px']} onClick={getRandomWord}>
+        <Button 
+            color="white"
+            bg="#81b29a" 
+            fontSize={['15px', '15px', '20px', '25px', '30px']} onClick={getRandomWord}>
           Get Random Word
         </Button>
       </Box>
@@ -64,6 +73,8 @@ const SpellingComponent = () => {
             <h1>{result && wordData.word}</h1>
             <p><strong>Definition:</strong> {wordData.meanings[0].definitions[0].definition}</p>
             <Input
+            bg="white"
+              width="25vh"
               placeholder="Spell the word here"
               onChange={(e) => setUserSpelling(e.target.value)}
               onKeyDown={(e) => {

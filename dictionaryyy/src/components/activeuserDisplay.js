@@ -9,14 +9,20 @@ const ActiveUserDisplay = () => {
 
   return (
     <Box 
+    color="black"
     pt="5vw"
     pl="5vw">
       {userId ? (
         <>
-          <Text fontSize="lg">
+          <Text 
+          fontFamily="raleway"
+          fontSize="lg"
+          >
             Logged in as: <strong>{userId}</strong>
           </Text>
-          <LogoutButton />
+    
+            <LogoutButton />
+
           <Link href="/">
           <Text>
             HOME
@@ -29,9 +35,16 @@ const ActiveUserDisplay = () => {
         pt="5vw"
         pl="5vw"
         >
-                <Text fontSize="lg">Not logged in</Text>
+                <Text 
+                fontFamily="raleway"
+                fontSize="lg">Not logged in
+                </Text>
                 <Link href="/">
-                <Button>
+                <Button
+                 color="white"
+                 bg="#81b29a" 
+                  padding={5}
+                >
                 HOME
                 </Button>
                 </Link>
