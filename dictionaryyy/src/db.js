@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import { Pool } from 'pg';
 import cors from 'cors';
 

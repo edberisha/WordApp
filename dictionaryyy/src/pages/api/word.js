@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default async function handler(req, res) {
+export default async function handler(res) {
   try {
     const response = await axios.get('https://random-word-api.herokuapp.com/word');
     res.status(200).json(response.data);
