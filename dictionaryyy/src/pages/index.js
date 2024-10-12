@@ -21,7 +21,7 @@ export default function Home() {
     try {
       await loginWithGoogle();
       window.location.href = "/main";
-    } catch (error) {xw
+    } catch (error) {
       console.error("Google sign-in error:", error);
     }
   };
