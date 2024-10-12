@@ -1,7 +1,7 @@
-import { Pool } from 'pg';
+const { Pool } = require('pg');
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: "postgres://uf8ep9dejfv3r3:pefa4c753569cd317c13cdc7b91dabc74c9d08d1c7140c4f1c559b68996aa150f@cbdhrtd93854d5.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d1j4ulaunbv166",
   ssl: {
     rejectUnauthorized: false,
   },

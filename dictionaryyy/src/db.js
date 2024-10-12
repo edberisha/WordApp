@@ -1,6 +1,8 @@
 import express from 'express';
-import { Pool } from 'pg';
+import pg from 'pg';
 import cors from 'cors';
+
+const { Pool } = pg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -39,4 +41,25 @@ app.post('/api/users', async (req, res) => {
 // Start the server
 app.listen(3001, () => {
   console.log('Server running on http://localhost:3001');
+});
+
+
+
+
+
+app.get('/api/users/:firebase_uid', async (req, res) => {
+  const { firebase_uid } = req.params;
+
+  try {
+      const result = await pool.query('SELECT correct_spelling_count FROM users WHERE firebase_uid = $1', [firebase_uid]);
+
+      if (result.rows.length > 0) {
+          res.status(200).json(result.rows[0]); // Make sure this returns { correct_spelling_count: value }
+      } else {
+          res.status(404).json({ message: 'User not found' });
+      }
+  } catch (err) {
+      console.error('Database error:', err.message);
+      res.status(500).json({ error: 'Error fetching user', details: err.message });
+  }
 });
