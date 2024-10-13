@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Box, Button, Input, Text } from '@chakra-ui/react';
-import useAuth from '../../hooks/useAuth'
+import useAuth from '../../hooks/useAuth';
+import fetchWord from '../../lib/fetchWord';
 import UserProfile from '../UserProfile';
 
 
@@ -13,19 +14,11 @@ const SpellingComponent = () => {
   const [result, setResult] = useState('');
   const { userId } = useAuth(); 
 
-
   const getRandomWord = async () => {
-
-
-    try {
-      const { data: [randomWord] } = await axios.get('https://random-word-api.herokuapp.com/word');
-      const { data: definitions } = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`);
-      setWordData(definitions[0]);
-      setUserSpelling('');
-      setResult('');
-    } catch (error) {
-      console.error("Error fetching word or definition:", error);
-    }
+    const newWord = await fetchWord();
+    setWordData(newWord[0]);
+    setUserSpelling('');
+    setResult('');
   };
 
   const checkSpelling = async () => {
