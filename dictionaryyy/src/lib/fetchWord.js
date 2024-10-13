@@ -9,11 +9,6 @@ const getRandomWord = async () => {
   }
 };
 
-// const getWordDefinition = async (word) => {
-//   const definitionResponse = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-//   return definitionResponse;
-// };
-
 const fetchWord = async () => {
   let word = '';
   let definitionNotFound = true;

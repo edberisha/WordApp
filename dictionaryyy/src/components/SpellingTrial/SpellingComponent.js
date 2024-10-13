@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Box, Button, Input, Text } from '@chakra-ui/react';
-import useAuth from '../../hooks/useAuth';
-import fetchWord from '../../lib/fetchWord';
-import UserProfile from '../UserProfile';
 
+import Definitions from '../../lib/Definitions';
+import fetchWord from '../../lib/fetchWord';
+import useAuth from '../../hooks/useAuth';
 
 
 
@@ -15,11 +15,15 @@ const SpellingComponent = () => {
   const { userId } = useAuth(); 
 
   const getRandomWord = async () => {
-    const newWord = await fetchWord();
-    setWordData(newWord[0]);
     setUserSpelling('');
     setResult('');
+    const newWord = await fetchWord();
+    setWordData(newWord[0]);
   };
+
+  const definitions = wordData ? wordData.meanings.map((meaning, index) => {
+    return <Definitions key={index} number={index} meaning={meaning} />
+  }) : null;
 
   const checkSpelling = async () => {
     if (userSpelling.toLowerCase() === wordData.word.toLowerCase()) {
@@ -55,9 +59,10 @@ const SpellingComponent = () => {
         {wordData && (
           <div>
             <h1>{result && wordData.word}</h1>
-            <p><strong>Definition:</strong> {wordData.meanings[0].definitions[0].definition}</p>
+            {definitions}
             <Input
               placeholder="Spell the word here"
+              value={userSpelling}
               onChange={(e) => setUserSpelling(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {

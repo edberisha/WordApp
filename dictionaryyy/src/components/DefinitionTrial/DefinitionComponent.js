@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Box, Button, Input, Text } from '@chakra-ui/react';
 import OpenAI from 'openai';
 
+import Definitions from '../../lib/Definitions';
 import fetchWord from '../../lib/fetchWord';
 
 const openai = new OpenAI({
@@ -16,11 +17,15 @@ const DefinitionComponent = () => {
   const [result, setResult] = useState('');
 
   const getRandomWord = async () => {
-    const newWord = await fetchWord();
-    setWordData(newWord[0]);
     setUserDefinition('');
     setResult('');
+    const newWord = await fetchWord();
+    setWordData(newWord[0]);
   };
+
+  const definitions = wordData ? wordData.meanings.map((meaning, index) => {
+    return <Definitions key={index} number={index} meaning={meaning} />
+  }) : null;
 
   const checkDefinition = async () => {
     if (!wordData || !userDefinition) return;
@@ -65,7 +70,7 @@ const DefinitionComponent = () => {
         {wordData && (
           <div>
             <h1>{wordData.word}</h1>
-            <p><strong>Definition:</strong> {result && wordData.meanings[0].definitions[0].definition}</p>
+            {result && definitions}
             <Input
               placeholder="Type your definition here"
               value={userDefinition}
