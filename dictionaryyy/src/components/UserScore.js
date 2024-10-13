@@ -8,6 +8,15 @@ const UserScore = ({ firebase_uid }) => {
 
   useEffect(() => {
     const fetchUserScore = async () => {
+      console.log('firebase_uid:', firebase_uid);
+      console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+
+      if (!firebase_uid) {
+        setError('No user ID provided');
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${firebase_uid}`);
         setCorrectSpellingCount(response.data.correct_spelling_count);
@@ -19,9 +28,7 @@ const UserScore = ({ firebase_uid }) => {
       }
     };
 
-    if (firebase_uid) {
-      fetchUserScore();
-    }
+    fetchUserScore();
   }, [firebase_uid]);
 
   if (loading) {
