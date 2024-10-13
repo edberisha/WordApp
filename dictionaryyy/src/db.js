@@ -14,7 +14,7 @@ const pool = new Pool({
 
 const app = express();
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://your-production-domain.com'], // Allow requests from these origins
+  origin: ['http://localhost:3000', 'https://wordapp-76cd48b9af07.herokuapp.com/'], // Allow requests from these origins
   methods: ['GET', 'POST'],
   credentials: true, // If you need to allow cookies or authentication
 }));
