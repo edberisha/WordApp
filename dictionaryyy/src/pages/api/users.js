@@ -8,7 +8,6 @@ const pool = new Pool({
 });
 
 export default async function handler(req, res) {
-  // Handle POST request
   if (req.method === 'POST') {
     const { firebase_uid, email } = req.body;
 
@@ -33,36 +32,8 @@ export default async function handler(req, res) {
       console.error('Database error:', err.message, err.stack);
       res.status(500).json({ error: 'Error saving user to database', details: err.message });
     }
-  
-  // Handle PUT request
-  } else if (req.method === 'PUT') {
-    console.log('PUT method identified');
-    const { firebase_uid } = req.body;
-
-    if (!firebase_uid) {
-      return res.status(400).json({ error: 'firebase_uid is required' });
-    }
-
-    try {
-      const result = await pool.query(
-        'UPDATE users SET correct_spelling_count = correct_spelling_count + 1 WHERE firebase_uid = $1 RETURNING *',
-        [firebase_uid]
-      );
-
-      if (result.rowCount === 0) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-
-      res.status(200).json({ message: 'Correct spelling count updated', user: result.rows[0] });
-
-    } catch (err) {
-      console.error('Database error:', err.message, err.stack);
-      res.status(500).json({ error: 'Error updating correct spelling count', details: err.message });
-    }
-
-  // Handle GET request
-  } else if (req.method === 'GET') {
-    const { firebase_uid } = req.query; // Get firebase_uid from query parameters
+  } else if (req.method === 'GET') { // Handle fetching user score
+    const { firebase_uid } = req.query;
 
     if (!firebase_uid) {
       return res.status(400).json({ error: 'firebase_uid is required' });
@@ -83,10 +54,31 @@ export default async function handler(req, res) {
       console.error('Database error:', err.message, err.stack);
       res.status(500).json({ error: 'Error fetching user score', details: err.message });
     }
+  } else if (req.method === 'PUT') { // Handle incrementing correct spelling count
+    console.log('PUT method identified');
+    const { firebase_uid } = req.body;
 
-  // Handle unsupported methods
+    if (!firebase_uid) {
+      return res.status(400).json({ error: 'firebase_uid is required' });
+    }
+
+    try {
+      const result = await pool.query(
+        'UPDATE users SET correct_spelling_count = correct_spelling_count + 1 WHERE firebase_uid = $1 RETURNING *',
+        [firebase_uid]
+      );
+
+      if (result.rowCount === 0) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.status(200).json({ message: 'Correct spelling count updated', user: result.rows[0] });
+    } catch (err) {
+      console.error('Database error:', err.message, err.stack);
+      res.status(500).json({ error: 'Error updating correct spelling count', details: err.message });
+    }
   } else {
-    res.setHeader('Allow', ['POST', 'PUT', 'GET']);
+    res.setHeader('Allow', ['POST', 'GET', 'PUT']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
