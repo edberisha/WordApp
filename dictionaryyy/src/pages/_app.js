@@ -5,14 +5,17 @@ import ActiveUserDisplay from "../components/activeuserDisplay"; // Ensure the n
 
 export default function App({ Component, pageProps }) {
   return (
-    <ChakraProvider> {/* Wrap your app with ChakraProvider */}
+    <ChakraProvider> 
       <AuthProvider>
-        <Box height="100vh" bg="#f4f1de">
-          <div className="app">
-            {/* You can include other components here if needed */}
-          </div>
+        <Box 
+        height="100vh" 
+        bg="#f4f1de"
+ 
+        >
           <ActiveUserDisplay />
-          <Component {...pageProps} />
+          <Box >
+           <Component {...pageProps} />
+          </Box>
         </Box>
       </AuthProvider>
     </ChakraProvider>

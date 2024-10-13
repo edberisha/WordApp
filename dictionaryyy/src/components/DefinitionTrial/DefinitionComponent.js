@@ -60,7 +60,11 @@ const DefinitionComponent = () => {
   return (
     <Box width="100%">
       <Box display="flex" justifyContent={"center"}>
-        <Button fontSize={['15px', '15px', '20px', '25px', '30px']} onClick={getRandomWord}>
+        <Button 
+                    color="white"
+                    bg="#81b29a" 
+        fontSize={['15px', '15px', '20px', '25px', '30px']} 
+        onClick={getRandomWord}>
           Get Random Word
         </Button>
       </Box>

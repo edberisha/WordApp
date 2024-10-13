@@ -32,6 +32,7 @@ export default function Home() {
       justifyContent="center"
       alignItems="center"
       flexDirection="column"
+
     >
 
       {user && (
@@ -43,6 +44,7 @@ export default function Home() {
       <TitleThing />
       </Box>
       <Box 
+        width={['80%','80%','40%','45%','35%','25%',]}
         p={50} 
         borderWidth={1} 
         borderRadius="20px" 
@@ -54,56 +56,17 @@ export default function Home() {
         
         {error && <Text 
         color="red.500" mb={4}>{error}</Text>}
-        <FormControl 
-        
-          id="email" 
-          mb={4}>
-          <FormLabel 
-          ></FormLabel>
-          <Input
-            fontSize={['sm','md','lg','xl']}
-            width="100%" 
-            color="black"
-            bg={'white'}
-            fontFamily={"raleway"}
-            type="email"
-            placeholder="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </FormControl>
-        <FormControl 
-        id="password" mb={4}>
-          <FormLabel></FormLabel>
-          <Input
-            fontSize={['sm','md','lg','xl']}
-            color="black"
-            width="100%" 
-            bg={'white'}
-            fontFamily={"raleway"}
-            type="password"
-            placeholder="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </FormControl>
-
-        <Button 
-          padding={5}
-          color="white"
-          bg="#81b29a" 
-          width="100%" 
-          onClick={handleLogin}
-        >
-          Login
-        </Button>
+       
+      
         <Box
         mt="5%"
         display="flex"
         gap={3}
+        flexDir="column"
    
         >
               <Button 
+                fontSize={["10px","12px","14px","17px"]}
                 color="white"
                 bg="#81b29a" 
                 padding={5}
@@ -111,10 +74,12 @@ export default function Home() {
                 onClick={handleGoogleSignIn}
                 
               >
-                Sign in with Google
+                Google Sign in
               </Button>
               <Link href="/main">
                 <Button 
+                                fontSize={["10px","12px","14px","17px"]}
+
                           color="white"
                           bg="#81b29a" 
                           padding={5}
