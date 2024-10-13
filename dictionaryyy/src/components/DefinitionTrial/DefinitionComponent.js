@@ -69,14 +69,22 @@ const DefinitionComponent = () => {
           <div>
             <h1>{wordData.word}</h1>
             <p><strong>Definition:</strong> {result && wordData.meanings[0].definitions[0].definition}</p>
-            <Input
-              placeholder="Type your definition here"
-              value={userDefinition}
-              onChange={(e) => setUserDefinition(e.target.value)}
-            />
-            <Button onClick={checkDefinition} colorScheme="teal" mt={4}>
-              Check Definition
-            </Button>
+            <Box 
+            >
+                <Box>
+                  <Input
+                    width={['200px','300px','400px','500px']}
+                    placeholder="Type your definition here"
+                    value={userDefinition}
+                    onChange={(e) => setUserDefinition(e.target.value)}
+                  />
+                </Box>
+                <Box>
+                  <Button onClick={checkDefinition} colorScheme="teal" mt={4}>
+                    Check Definition
+                  </Button>
+                </Box>
+            </Box>
             {result && (
               <Text mt={4} fontWeight="bold">{result}</Text>
             )}

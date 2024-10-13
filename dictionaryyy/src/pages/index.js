@@ -122,7 +122,7 @@ export default function Home() {
                   colorScheme="teal" 
                   width="full" 
                 >
-                  Play as Guest
+                  Play Now
                 </Button>
               </Link>
         </Box>

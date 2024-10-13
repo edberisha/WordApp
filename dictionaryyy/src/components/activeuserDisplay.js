@@ -20,14 +20,20 @@ const ActiveUserDisplay = () => {
           >
             Logged in as: <strong>{userId}</strong>
           </Text>
-    
-            <LogoutButton />
+              <Box 
+          
+              >
+                <LogoutButton />
 
-          <Link href="/">
-          <Text>
-            HOME
-          </Text>
-          </Link>
+              <Link href="/">
+              <Button
+              color="white"
+              bg="#e07a5f"
+              >
+                HOME
+              </Button>
+              </Link>
+          </Box>
           <UserProfile />
         </>
       ) : (
