@@ -42,7 +42,7 @@ const SpellingComponent = () => {
       const firebase_uid = userId; // Replace with actual firebase_uid of the logged-in user
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'; // Default to localhost for local testing
-        await axios.put(`${apiUrl}/api/users/score`, { firebase_uid });
+        await axios.put(`${apiUrl}/api/users`, { firebase_uid });
       } catch (error) {
         console.error("Error updating correct spelling count:", error);
       }
