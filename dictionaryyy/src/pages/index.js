@@ -4,18 +4,9 @@ import useAuth from '../hooks/useAuth';
 import {TitleThing} from '../components/TitleThing'
 
 export default function Home() {
-  const { user, error, loginWithEmail, loginWithGoogle } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { user, error, loginWithGoogle } = useAuth();
 
-  const handleLogin = async () => {
-    try {
-      await loginWithEmail(email, password);
-      window.location.href = "/main";
-    } catch (error) {
-      console.error("Login error:", error);
-    }
-  };
+
 
   const handleGoogleSignIn = async () => {
     try {
