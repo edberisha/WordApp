@@ -24,6 +24,8 @@ app.use(express.json());
 app.post('/api/users', async (req, res) => {
   const { firebase_uid, email } = req.body;
 
+  console.log('Received request:', { firebase_uid, email });
+
   try {
     const result = await pool.query(
       'INSERT INTO users (firebase_uid, email) VALUES ($1, $2) ON CONFLICT (firebase_uid) DO NOTHING RETURNING *',

@@ -1,10 +1,10 @@
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  user: 'computeraccount', // replace with your PostgreSQL username
-  host: 'localhost',
-  database: 'wordapp_db', // replace with your database name
-  port: 5432,
+  connectionString: process.env.DATABASE_URL, // Use Heroku's DATABASE_URL
+  ssl: {
+    rejectUnauthorized: false, // This is important for Heroku's SSL connection
+  },
 });
 
 export default async function handler(req, res) {
