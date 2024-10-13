@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Box, Button, Link, Text } from '@chakra-ui/react';
 import useAuth from '../hooks/useAuth';
 import {TitleThing} from '../components/TitleThing'
