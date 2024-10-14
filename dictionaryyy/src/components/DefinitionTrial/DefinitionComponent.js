@@ -3,6 +3,9 @@ import axios from 'axios';
 import { Box, Button, Input, Text } from '@chakra-ui/react';
 import OpenAI from 'openai';
 
+import Definitions from '../../lib/Definitions';
+import fetchWord from '../../lib/fetchWord';
+
 const openai = new OpenAI({
   apiKey: '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',
   dangerouslyAllowBrowser: true,
@@ -14,16 +17,15 @@ const DefinitionComponent = () => {
   const [result, setResult] = useState('');
 
   const getRandomWord = async () => {
-    try {
-      const { data: [randomWord] } = await axios.get('https://random-word-api.herokuapp.com/word');
-      const { data: definitions } = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`);
-      setWordData(definitions[0]);
-      setUserDefinition('');
-      setResult('');
-    } catch (error) {
-      console.error("Error fetching word or definition:", error);
-    }
+    setUserDefinition('');
+    setResult('');
+    const newWord = await fetchWord();
+    setWordData(newWord[0]);
   };
+
+  const definitions = wordData ? wordData.meanings.map((meaning, index) => {
+    return <Definitions key={index} number={index} meaning={meaning} />
+  }) : null;
 
   const checkDefinition = async () => {
     if (!wordData || !userDefinition) return;
@@ -68,7 +70,7 @@ const DefinitionComponent = () => {
         {wordData && (
           <div>
             <h1>{wordData.word}</h1>
-            <p><strong>Definition:</strong> {result && wordData.meanings[0].definitions[0].definition}</p>
+            {result && definitions}
             <Input
               placeholder="Type your definition here"
               value={userDefinition}
