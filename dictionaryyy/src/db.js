@@ -14,20 +14,20 @@ const pool = new Pool({
 
 const app = express();
 app.use(cors({
-  origin: ['*'], // Allow requests from these origins
-  methods: ['GET', 'POST'],
-  credentials: true, // If you need to allow cookies or authentication
+  // origin: ['*'], // Allow requests from these origins
+  // methods: ['GET', 'POST'],
+  // credentials: true, // If you need to allow cookies or authentication
 }));
 app.use(express.json());
 
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", '*');
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
-  next();
-});
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", '*');
+//     res.header("Access-Control-Allow-Credentials", true);
+//     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+//     res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
+//     next();
+// });
 
 // API endpoint to add a user
 app.post('/api/users', async (req, res) => {
