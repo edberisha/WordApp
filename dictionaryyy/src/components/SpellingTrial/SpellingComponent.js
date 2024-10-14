@@ -27,7 +27,7 @@ const SpellingComponent = ({setCorrectSpellingCount}) => {
     return <Definitions key={index} number={index} meaning={meaning} />
   }) : null;
 
-  const checkSpelling = async () => {
+  const checkSpelling = async ({setCorrectSpellingCount}) => {
     if (userSpelling.toLowerCase() === wordData.word.toLowerCase()) {
       setResult('Correct! 🎉');
 
@@ -36,7 +36,7 @@ const SpellingComponent = ({setCorrectSpellingCount}) => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'; // Default to localhost for local testing
         await axios.put(`${apiUrl}/api/users`, { firebase_uid });
-        setCorrectSpellingCount + 1
+        setCorrectSpellingCount(curr => curr+1)
       } catch (error) {
         console.error("Error updating correct spelling count:", error);
       }
