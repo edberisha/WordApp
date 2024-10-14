@@ -1,10 +1,10 @@
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  user: 'computeraccount', // replace with your PostgreSQL username
-  host: 'localhost',
-  database: 'wordapp_db', // replace with your database name
-  port: 5432,
+  connectionString: process.env.DATABASE_URL, // Use Heroku's DATABASE_URL
+  ssl: {
+    rejectUnauthorized: false, // This is important for Heroku's SSL connection
+  },
 });
 
 export default async function handler(req, res) {
@@ -32,8 +32,30 @@ export default async function handler(req, res) {
       console.error('Database error:', err.message, err.stack);
       res.status(500).json({ error: 'Error saving user to database', details: err.message });
     }
+  } else if (req.method === 'GET') { // Handle fetching user score
+    const { firebase_uid } = req.query;
+
+    if (!firebase_uid) {
+      return res.status(400).json({ error: 'firebase_uid is required' });
+    }
+
+    try {
+      const result = await pool.query(
+        'SELECT correct_spelling_count FROM users WHERE firebase_uid = $1',
+        [firebase_uid]
+      );
+
+      if (result.rowCount === 0) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.status(200).json(result.rows[0]);
+    } catch (err) {
+      console.error('Database error:', err.message, err.stack);
+      res.status(500).json({ error: 'Error fetching user score', details: err.message });
+    }
   } else if (req.method === 'PUT') { // Handle incrementing correct spelling count
-    console.log('put method identified')
+    console.log('PUT method identified');
     const { firebase_uid } = req.body;
 
     if (!firebase_uid) {
@@ -56,7 +78,7 @@ export default async function handler(req, res) {
       res.status(500).json({ error: 'Error updating correct spelling count', details: err.message });
     }
   } else {
-    res.setHeader('Allow', ['POST', 'PUT']);
+    res.setHeader('Allow', ['POST', 'GET', 'PUT']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

@@ -7,7 +7,7 @@ import Definitions from '../../lib/Definitions';
 import fetchWord from '../../lib/fetchWord';
 
 const openai = new OpenAI({
-  apiKey: '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',
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
 });
 
@@ -62,7 +62,11 @@ const DefinitionComponent = () => {
   return (
     <Box width="100%">
       <Box display="flex" justifyContent={"center"}>
-        <Button fontSize={['15px', '15px', '20px', '25px', '30px']} onClick={getRandomWord}>
+        <Button 
+                    color="white"
+                    bg="#81b29a" 
+        fontSize={['15px', '15px', '20px', '25px', '30px']} 
+        onClick={getRandomWord}>
           Get Random Word
         </Button>
       </Box>
@@ -70,15 +74,25 @@ const DefinitionComponent = () => {
         {wordData && (
           <div>
             <h1>{wordData.word}</h1>
-            {result && definitions}
-            <Input
-              placeholder="Type your definition here"
-              value={userDefinition}
-              onChange={(e) => setUserDefinition(e.target.value)}
-            />
-            <Button onClick={checkDefinition} colorScheme="teal" mt={4}>
-              Check Definition
-            </Button>
+
+            <p><strong>Definition:</strong> {result && wordData.meanings[0].definitions[0].definition}</p>
+            <Box 
+            >
+                <Box>
+                  <Input
+                    width={['200px','300px','400px','500px']}
+                    placeholder="Type your definition here"
+                    value={userDefinition}
+                    onChange={(e) => setUserDefinition(e.target.value)}
+                  />
+                </Box>
+                <Box>
+                  <Button onClick={checkDefinition} colorScheme="teal" mt={4}>
+                    Check Definition
+                  </Button>
+                </Box>
+            </Box>
+
             {result && (
               <Text mt={4} fontWeight="bold">{result}</Text>
             )}

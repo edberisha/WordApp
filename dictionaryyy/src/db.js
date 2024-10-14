@@ -1,48 +1,30 @@
-const express = require('express');
-const { Pool } = require('pg');
-const cors = require('cors'); // Import CORS
+import express from 'express';
+import pg from 'pg';
+import cors from 'cors';
+import dotenv from 'dotenv'; // Import dotenv to load .env variables
 
-// Initialize the PostgreSQL pool
+dotenv.config(); // Load environment variables from .env file
+
+const { Pool } = pg;
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // This will pull the value from your .env file
-  ssl: {
-    rejectUnauthorized: false, // Required for Heroku
-  },
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
-// Function to create the users table
-const createUsersTable = async () => {
-  const query = `
-    CREATE TABLE IF NOT EXISTS users (
-      id SERIAL PRIMARY KEY,
-      firebase_uid VARCHAR(255) UNIQUE NOT NULL,
-      email VARCHAR(255) NOT NULL, 
-      correct_spelling_count INT DEFAULT 0, 
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `;
-  await pool.query(query);
-  console.log("Users table created or already exists");
-};
-
-// Initialize the database and create the table
-const init = async () => {
-  try {
-    await pool.connect();
-    await createUsersTable();
-  } catch (err) {
-    console.error('Error connecting to the database', err);
-  }
-};
-
 const app = express();
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+  origin: ['*'], // Allow requests from these origins
+  methods: ['GET', 'POST'],
+  credentials: true, // If you need to allow cookies or authentication
+}));
 app.use(express.json());
 
 // API endpoint to add a user
 app.post('/api/users', async (req, res) => {
   const { firebase_uid, email } = req.body;
-  console.log("Received firebase_uid:", firebase_uid); // Log the incoming UID
+
+  console.log('Received request:', { firebase_uid, email });
 
   try {
     const result = await pool.query(
@@ -56,62 +38,31 @@ app.post('/api/users', async (req, res) => {
 
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error('Database error:', err.message); // More detailed logging
+    console.error('Database error:', err.message);
     res.status(500).json({ error: 'Error saving user to database', details: err.message });
   }
 });
 
-// PUT method to increment correct spelling count
-app.put('/api/users/score', async (req, res) => {
-  console.log('PUT method identified');
-  const { firebase_uid } = req.body;
-
-  if (!firebase_uid) {
-    return res.status(400).json({ error: 'firebase_uid is required' });
-  }
-
-  try {
-    const result = await pool.query(
-      'UPDATE users SET correct_spelling_count = correct_spelling_count + 1 WHERE firebase_uid = $1 RETURNING *',
-      [firebase_uid]
-    );
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.status(200).json({ message: 'Correct spelling count updated', user: result.rows[0] });
-  } catch (err) {
-    console.error('Database error:', err.message, err.stack);
-    res.status(500).json({ error: 'Error updating correct spelling count', details: err.message });
-  }
-});
-
-// GET method to retrieve user data
+// API endpoint to get user score
 app.get('/api/users/:firebase_uid', async (req, res) => {
   const { firebase_uid } = req.params;
 
   try {
-    const result = await pool.query(
-      'SELECT correct_spelling_count FROM users WHERE firebase_uid = $1',
-      [firebase_uid]
-    );
+    const result = await pool.query('SELECT correct_spelling_count FROM users WHERE firebase_uid = $1', [firebase_uid]);
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: 'User not found' });
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]); // Make sure this returns { correct_spelling_count: value }
+    } else {
+      res.status(404).json({ message: 'User not found' });
     }
-
-    res.status(200).json(result.rows[0]);
   } catch (err) {
     console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Error retrieving user data', details: err.message });
+    res.status(500).json({ error: 'Error fetching user', details: err.message });
   }
 });
 
 // Start the server
-app.listen(3001, () => {
-  console.log('Server running on http://localhost:3001');
+const PORT = process.env.PORT || 3001; // Use the port from Heroku or default to 3001
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
-
-// Initialize the database
-init();

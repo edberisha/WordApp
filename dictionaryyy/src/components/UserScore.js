@@ -9,7 +9,9 @@ const UserScore = ({ firebase_uid }) => {
   useEffect(() => {
     const fetchUserScore = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/users/${firebase_uid}`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
+          params: { firebase_uid } // Pass firebase_uid as a query parameter
+        });
         setCorrectSpellingCount(response.data.correct_spelling_count);
       } catch (err) {
         console.error('Error fetching user score:', err);

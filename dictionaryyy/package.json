@@ -1,12 +1,14 @@
 {
   "name": "dictionaryyy",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "init": "node initDatabase.js"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.10.1",
@@ -27,11 +29,16 @@
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
     "@types/node": "^20.16.11",
+    "@types/pg": "^8.11.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.15",
-    "typescript": "^5"
+    "eslint-config-next": "14.2.15"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Box, Button, Input, Text } from '@chakra-ui/react';
+import useAuth from '../../hooks/useAuth'
+
 
 import Definitions from '../../lib/Definitions';
 import fetchWord from '../../lib/fetchWord';
@@ -15,6 +17,7 @@ const SpellingComponent = () => {
   const { userId } = useAuth(); 
 
   const getRandomWord = async () => {
+
     setUserSpelling('');
     setResult('');
     const newWord = await fetchWord();
@@ -32,7 +35,8 @@ const SpellingComponent = () => {
       // Call the API to update the correct spelling count
       const firebase_uid = userId; // Replace with actual firebase_uid of the logged-in user
       try {
-        await axios.put('http://localhost:3001/api/users/score', { firebase_uid });
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'; // Default to localhost for local testing
+        await axios.put(`${apiUrl}/api/users`, { firebase_uid });
       } catch (error) {
         console.error("Error updating correct spelling count:", error);
       }
@@ -51,7 +55,10 @@ const SpellingComponent = () => {
   return (
     <Box width="100%">
       <Box display="flex" justifyContent={"center"}>
-        <Button fontSize={['15px', '15px', '20px', '25px', '30px']} onClick={getRandomWord}>
+        <Button 
+            color="white"
+            bg="#81b29a" 
+            fontSize={['15px', '15px', '20px', '25px', '30px']} onClick={getRandomWord}>
           Get Random Word
         </Button>
       </Box>
@@ -61,6 +68,8 @@ const SpellingComponent = () => {
             <h1>{result && wordData.word}</h1>
             {definitions}
             <Input
+            bg="white"
+              width="25vh"
               placeholder="Spell the word here"
               value={userSpelling}
               onChange={(e) => setUserSpelling(e.target.value)}

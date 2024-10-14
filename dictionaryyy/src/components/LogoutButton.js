@@ -12,7 +12,10 @@ const LogoutButton = () => {
   };
 
   return (
-    <Button colorScheme="red" onClick={handleLogout}>
+    <Button 
+    color="white"
+    bg="#81b29a" 
+    onClick={handleLogout}>
       Logout
     </Button>
   );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { auth, provider } from '../firebase/firebaseConfig';
+import { auth, provider } from '../../src/firebase/firebaseConfig'
 import { signInWithEmailAndPassword, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 
 const useAuth = () => {
@@ -19,6 +19,7 @@ const useAuth = () => {
   }, []);
 
   const addUserToDatabase = async (firebase_uid, email) => {
+    console.log('Adding user to database:', { firebase_uid, email }); // Log here
     const response = await fetch('/api/users', {
       method: 'POST',
       headers: {
@@ -26,13 +27,14 @@ const useAuth = () => {
       },
       body: JSON.stringify({ firebase_uid, email }),
     });
-
+  
     if (!response.ok) {
       throw new Error('Failed to add user');
     }
-
+  
     return response.json();
   };
+  
 
   const loginWithEmail = async (email, password) => {
     setError('');
@@ -52,14 +54,20 @@ const useAuth = () => {
     setError('');
     try {
       const result = await signInWithPopup(auth, provider);
-      setUserId(result.user.uid);
-      await addUserToDatabase(result.user.uid, result.user.email);
+      const { uid, email } = result.user;
+  
+      console.log('Google User Credential:', result.user); // Check this log
+  
+      setUserId(uid);
+      await addUserToDatabase(uid, email); // Ensure email is not undefined
       return result.user;
     } catch (error) {
       setError(error.message);
+      console.error('Google login error:', error);
       throw error;
     }
   };
+  
 
   const logout = async () => {
     try {
