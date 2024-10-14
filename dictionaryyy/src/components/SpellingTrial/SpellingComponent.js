@@ -6,7 +6,6 @@ import useAuth from '../../hooks/useAuth'
 
 import Definitions from '../../lib/Definitions';
 import fetchWord from '../../lib/fetchWord';
-import useAuth from '../../hooks/useAuth';
 
 
 
