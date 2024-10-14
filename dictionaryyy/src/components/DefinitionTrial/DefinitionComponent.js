@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Box, Button, Input, Text } from '@chakra-ui/react';
 import OpenAI from 'openai';
 
-import Definitions from '../../lib/Definitions';
+// import Definitions from '../../lib/Definitions';
 import fetchWord from '../../lib/fetchWord';
 
 const openai = new OpenAI({
