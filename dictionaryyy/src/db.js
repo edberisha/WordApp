@@ -1,6 +1,6 @@
 import express from 'express';
 import pg from 'pg';
-import cors from 'cors';
+// import cors from 'cors';
 import dotenv from 'dotenv'; // Import dotenv to load .env variables
 
 dotenv.config(); // Load environment variables from .env file
