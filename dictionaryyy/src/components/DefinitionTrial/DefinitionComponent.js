@@ -23,9 +23,9 @@ const DefinitionComponent = () => {
     setWordData(newWord[0]);
   };
 
-  const definitions = wordData ? wordData.meanings.map((meaning, index) => {
-    return <Definitions key={index} number={index} meaning={meaning} />
-  }) : null;
+  // const definitions = wordData ? wordData.meanings.map((meaning, index) => {
+  //   return <Definitions key={index} number={index} meaning={meaning} />
+  // }) : null;
 
   const checkDefinition = async () => {
     if (!wordData || !userDefinition) return;
