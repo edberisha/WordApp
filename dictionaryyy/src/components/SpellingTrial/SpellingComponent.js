@@ -4,6 +4,10 @@ import { Box, Button, Input, Text } from '@chakra-ui/react';
 import useAuth from '../../hooks/useAuth'
 
 
+import Definitions from '../../lib/Definitions';
+import fetchWord from '../../lib/fetchWord';
+import useAuth from '../../hooks/useAuth';
+
 
 
 const SpellingComponent = () => {
@@ -12,27 +16,17 @@ const SpellingComponent = () => {
   const [result, setResult] = useState('');
   const { userId } = useAuth(); 
 
-
   const getRandomWord = async () => {
-    try {
-      const { data: [randomWord] } = await axios.get('https://random-word.ryanrk.com/api/en/word/random');
-      const { data: definitions } = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`);
-      setWordData(definitions[0]);
-      setUserSpelling('');
-      setResult('');
-    } catch (error) {
-      if (error.response) {
-        console.error("Error fetching word or definition:", error.response.data);
-        setResult("Could not fetch a new word. Please try again.");
-      } else if (error.request) {
-        console.error("No response received:", error.request);
-        setResult("No response from server. Please check your connection.");
-      } else {
-        console.error("Error:", error.message);
-        setResult("An unexpected error occurred. Please try again later.");
-      }
-    }
+
+    setUserSpelling('');
+    setResult('');
+    const newWord = await fetchWord();
+    setWordData(newWord[0]);
   };
+
+  const definitions = wordData ? wordData.meanings.map((meaning, index) => {
+    return <Definitions key={index} number={index} meaning={meaning} />
+  }) : null;
 
   const checkSpelling = async () => {
     if (userSpelling.toLowerCase() === wordData.word.toLowerCase()) {
@@ -72,11 +66,12 @@ const SpellingComponent = () => {
         {wordData && (
           <div>
             <h1>{result && wordData.word}</h1>
-            <p><strong>Definition:</strong> {wordData.meanings[0].definitions[0].definition}</p>
+            {definitions}
             <Input
             bg="white"
               width="25vh"
               placeholder="Spell the word here"
+              value={userSpelling}
               onChange={(e) => setUserSpelling(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
