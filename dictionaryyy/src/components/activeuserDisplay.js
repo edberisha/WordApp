@@ -4,7 +4,7 @@ import useAuth from '../hooks/useAuth';
 import LogoutButton from '../components/LogoutButton'; 
 import UserProfile from './UserProfile';
 
-const ActiveUserDisplay = () => {
+const ActiveUserDisplay = (correctSpellingCount) => {
   const { userId } = useAuth(); 
 
   return (
@@ -34,7 +34,7 @@ const ActiveUserDisplay = () => {
               </Button>
               </Link>
           </Box>
-          <UserProfile />
+          <UserProfile correctSpellingCount={correctSpellingCount}/>
         </>
       ) : (
         <Box

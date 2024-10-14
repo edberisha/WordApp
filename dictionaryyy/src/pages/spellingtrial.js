@@ -3,7 +3,7 @@ import SpellingComponent from '../components/SpellingTrial/SpellingComponent';
 
 
 
-export default function SpellingTrial() {
+export default function SpellingTrial({setCorrectSpellingCount}) {
 
 
   return (
@@ -13,7 +13,7 @@ export default function SpellingTrial() {
     display={"flex"}
     justifyContent={"center"}
     >
-        <SpellingComponent />
+        <SpellingComponent setCorrectSpellingCount={setCorrectSpellingCount}/>
     </Box>
     </>
   );

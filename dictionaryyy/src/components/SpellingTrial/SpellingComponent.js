@@ -9,7 +9,7 @@ import fetchWord from '../../lib/fetchWord';
 
 
 
-const SpellingComponent = () => {
+const SpellingComponent = ({setCorrectSpellingCount}) => {
   const [wordData, setWordData] = useState(null);
   const [userSpelling, setUserSpelling] = useState('');
   const [result, setResult] = useState('');
@@ -36,6 +36,7 @@ const SpellingComponent = () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'; // Default to localhost for local testing
         await axios.put(`${apiUrl}/api/users`, { firebase_uid });
+        setCorrectSpellingCount + 1
       } catch (error) {
         console.error("Error updating correct spelling count:", error);
       }

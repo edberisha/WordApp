@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const UserScore = ({ firebase_uid }) => {
-  const [correctSpellingCount, setCorrectSpellingCount] = useState(null);
+const UserScore = ({ firebase_uid, correctSpellingCount }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
