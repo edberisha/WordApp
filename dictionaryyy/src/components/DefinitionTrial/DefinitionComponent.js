@@ -28,6 +28,28 @@ const DefinitionComponent = () => {
     return <Definitions key={index} number={index} meaning={meaning} />
   }) : null;
 
+  const response = () => {
+    if (result !== '') {
+      if (result.accuracy === "correct") {
+        return <Text mt={4} fontWeight="bold">Correct!</Text>
+      } else if (result.accuracy === "incorrect" || result.accuracy === "close") {
+        return (
+          <Box>
+            <Text mt={4} fontWeight="bold">
+              {result.accuracy === "incorrect" ? "Incorrect" : "Close, but not quite correct"}
+            </Text>
+            <Text mt={4} >{result.analysis}</Text>
+          </Box>
+        )
+      } else {
+        console.log(result);
+        return <Text mt={4} fontWeight="bold">Error. Unable to retrieve result.</Text>
+      }
+    } else {
+      return null;
+    }
+  }
+
   // const checkDefinition = async () => {
   //   if (!wordData || !userDefinition) return;
 
@@ -82,8 +104,8 @@ const DefinitionComponent = () => {
       axios.post(`http://localhost:3000/api/gemini`, prompt)
       .then((res) => {
         if (res.status === 200) {
-          console.log(res.data.analysis);
-          setResult(res.data.accuracy);
+          console.log(res.data);
+          setResult(res.data);
         } else {
           console.error(res.error);
         }
@@ -130,7 +152,7 @@ const DefinitionComponent = () => {
           <div>
             <h1>{wordData.word}</h1>
 
-            <p><strong>Definition:</strong> {result && wordData.meanings[0].definitions[0].definition}</p>
+            {/* <p><strong>Definition:</strong> {result && wordData.meanings[0].definitions[0].definition}</p> */}
             {result && <Box>
               <p><strong>Definitions:</strong></p>
               {definitions}
@@ -152,9 +174,10 @@ const DefinitionComponent = () => {
                 </Box>
             </Box>
 
-            {result && (
+            {/* {result && (
               <Text mt={4} fontWeight="bold">{result}</Text>
-            )}
+            )} */}
+            {response()}
           </div>
         )}
       </Box>
