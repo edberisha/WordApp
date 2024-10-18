@@ -2,7 +2,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 
-
 const apiKey = process.env.GEMINI_API_KEY;
 let genAI;
 let chatSession;
@@ -18,7 +17,7 @@ async function newChat() {
     topP: 0.95,
     topK: 64,
     maxOutputTokens: 8192,
-    responseMimeType: "text/plain",
+    responseMimeType: "application/json",
   };
   chatSession = model.startChat({
     generationConfig,
@@ -67,6 +66,7 @@ export default async function handler(req, res) {
       const result = await chatSession.sendMessage(input);
       const response = result.response;
       const output = response.text();
+      console.log("RESPONSE: ",output);
       res.status(200).send(output);
     } catch (error) {
       console.error(error);

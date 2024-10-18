@@ -82,7 +82,8 @@ const DefinitionComponent = () => {
       axios.post(`http://localhost:3000/api/gemini`, prompt)
       .then((res) => {
         if (res.status === 200) {
-          console.log(res);
+          console.log(res.data.analysis);
+          setResult(res.data.accuracy);
         } else {
           console.error(res.error);
         }
