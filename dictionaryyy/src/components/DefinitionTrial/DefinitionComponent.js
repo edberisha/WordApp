@@ -1,17 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Box, Button, Input, Text } from '@chakra-ui/react';
-import OpenAI from 'openai';
+// import OpenAI from 'openai';
 
 import Definitions from '../../lib/Definitions';
 import fetchWord from '../../lib/fetchWord';
 
-const openai = new OpenAI({
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
+// const openai = new OpenAI({
+//   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+//   dangerouslyAllowBrowser: true,
+// });
 
 const DefinitionComponent = () => {
+  const [aiReady, setAiReady] = useState(false);
   const [wordData, setWordData] = useState(null);
   const [userDefinition, setUserDefinition] = useState('');
   const [result, setResult] = useState('');
@@ -27,37 +28,90 @@ const DefinitionComponent = () => {
     return <Definitions key={index} number={index} meaning={meaning} />
   }) : null;
 
-  const checkDefinition = async () => {
-    if (!wordData || !userDefinition) return;
+  // const checkDefinition = async () => {
+  //   if (!wordData || !userDefinition) return;
 
-    const actualDefinition = wordData.meanings[0].definitions[0].definition;
+  //   const actualDefinition = wordData.meanings[0].definitions[0].definition;
+
+  //   try {
+  //     const response = await openai.chat.completions.create({
+  //       model: 'gpt-3.5-turbo',
+  //       messages: [
+  //         {
+  //           role: 'user',
+  //           content: `RESPOND ONLY WITH "GOOD DEFINITION" OR "BAD DEFINITION". Is the following definition correct for the word "${wordData.word}"?\nUser's Definition: "${userDefinition}"\nActual Definition: "${actualDefinition}"`
+  //         },
+  //       ],
+  //     });
+  //     setResult(response.choices[0]?.message?.content || 'No response from AI');
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error)) {
+  //       if (error.response?.status === 429) {
+  //         console.error("Rate limit exceeded. Please try again later.");
+  //         setResult('Rate limit exceeded. Please try again later.');
+  //       } else {
+  //         console.error("Error checking definition:", error.message);
+  //         setResult('Error checking definition.');
+  //       }
+  //     } else {
+  //       console.error("Unexpected error:", error);
+  //       setResult('An unexpected error occurred.');
+  //     }
+  //   }
+  // };
+
+  const checkDefinition = () => {
+    const word = wordData.word;
+    const dictDefinitions = wordData.meanings.map(meaning => {
+        const partOfSpeech = meaning.partOfSpeech;
+        const definitionArray = meaning.definitions;
+        const definitions = definitionArray.map(definition => definition.definition);
+        return {
+          partOfSpeech,
+          definitions
+        }
+    });
+
+    const prompt = {
+      word,
+      dictDefinitions,
+      userDefinition
+    }
 
     try {
-      const response = await openai.chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'user',
-            content: `RESPOND ONLY WITH "GOOD DEFINITION" OR "BAD DEFINITION". Is the following definition correct for the word "${wordData.word}"?\nUser's Definition: "${userDefinition}"\nActual Definition: "${actualDefinition}"`
-          },
-        ],
-      });
-      setResult(response.choices[0]?.message?.content || 'No response from AI');
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 429) {
-          console.error("Rate limit exceeded. Please try again later.");
-          setResult('Rate limit exceeded. Please try again later.');
+      axios.post(`http://localhost:3000/api/gemini`, prompt)
+      .then((res) => {
+        if (res.status === 200) {
+          console.log(res);
         } else {
-          console.error("Error checking definition:", error.message);
-          setResult('Error checking definition.');
+          console.error(res.error);
         }
-      } else {
-        console.error("Unexpected error:", error);
-        setResult('An unexpected error occurred.');
-      }
+      })
+    } catch (error) {
+      console.error(error);
     }
-  };
+  }
+
+  useEffect(() => {
+    const startDefinintionPrompt = () => {
+      axios.get('http://localhost:3000/api/gemini')
+      .then((res) => {
+        if (res.status === 200) {
+          setAiReady(true);
+          console.log("Ready to check definitions");
+        } else {
+          console.error("Unable to start AI conversation");
+        }
+      })
+    }
+    startDefinintionPrompt();
+  }, []);
+
+  if (!aiReady) {
+    return (
+      <Box>Please Wait. Starting AI To Check Definitions.</Box>
+    )
+  }
 
   return (
     <Box width="100%">
@@ -76,6 +130,10 @@ const DefinitionComponent = () => {
             <h1>{wordData.word}</h1>
 
             <p><strong>Definition:</strong> {result && wordData.meanings[0].definitions[0].definition}</p>
+            {result && <Box>
+              <p><strong>Definitions:</strong></p>
+              {definitions}
+            </Box>}
             <Box 
             >
                 <Box>
