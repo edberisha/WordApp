@@ -27,7 +27,7 @@ const SpellingComponent = ({setCorrectSpellingCount}) => {
     return <Definitions key={index} number={index} meaning={meaning} />
   }) : null;
 
-  const checkSpelling = async ({setCorrectSpellingCount}) => {
+  const checkSpelling = async () => {
     if (userSpelling.toLowerCase() === wordData.word.toLowerCase()) {
       setResult('Correct! 🎉');
 
